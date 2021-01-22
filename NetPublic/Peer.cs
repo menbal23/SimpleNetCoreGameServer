@@ -17,7 +17,6 @@ namespace NetPublic
 
         // 접속한 유저를 구분하기위한 ID
         public int m_PeerID = 0;
-        public bool m_bServerPeer = false;
 
         //로그인후 실제 유저데이터와 연결하기 위한 ID
         public Int64 m_AccountID = 0;
@@ -26,30 +25,18 @@ namespace NetPublic
         private Int64 m_EventCount = 0;
         public Int64 m_ReceiveTick = 0;
         public Int64 m_SendTick = 0;
-
         private int m_CloseFlag = 0;
-
-        private short m_LastSendPacketType = 0;
-        private short m_LastReceivePacketType = 0;
 
         //리셋
         public void Reset()
         {
             m_Socket = null;
-
             m_PeerID = 0;
-            m_bServerPeer = false;
-
             m_AccountID = 0;
-
             m_EventCount = 0;
             m_ReceiveTick = 0;
             m_SendTick = 0;
-
             m_CloseFlag = 0;
-
-            m_LastSendPacketType = 0;
-            m_LastReceivePacketType = 0;
         }
 
         private SocketAsyncEventArgs AllocEvent()
@@ -211,7 +198,7 @@ namespace NetPublic
                         arg.SetBuffer(buffer, 0, buffer.Length);
                     }
 
-                    if (bTryReceive == true && m_Socket.ReceiveAsync(arg) == true) //pending
+                    if (bTryReceive == true && m_Socket.ReceiveAsync(arg) == true)
                         break;
 
                     if (ReceiveCompleted(arg) == false)
@@ -231,11 +218,6 @@ namespace NetPublic
         {
             if (arg.SocketError != SocketError.Success || arg.BytesTransferred <= 0)
             {
-                if (m_bServerPeer == true)
-                {
-                    string logMessage = string.Format("Server Peer Scoket Error : {0}, BytesTransferred : {1}, BufferLength : {2}, Offset : {3}", arg.SocketError, arg.BytesTransferred, (arg.Buffer != null ? arg.Buffer.Length : -1), arg.Offset);
-                    Console.WriteLine(logMessage, false, true, ConsoleColor.Red);
-                }
                 Close(arg);
                 return false;
             }
@@ -254,10 +236,7 @@ namespace NetPublic
                 int packetSize = BitConverter.ToInt32(arg.Buffer, currentPos);
                 if (packetSize <= Define.MIN_PACKET_SIZE || packetSize >= Define.MAX_PACKET_SIZE)
                 {
-                    if (m_bServerPeer == true)
-                        Console.WriteLine(string.Format("ReceiveCompleted: packetSize {0}, Server Peer", packetSize), false, true, ConsoleColor.Red);
-                    else
-                        Console.WriteLine(string.Format("ReceiveCompleted: packetSize {0}, Client Peer", packetSize), false, true, ConsoleColor.Red);
+                    Console.WriteLine(string.Format("ReceiveCompleted: packetSize {0}, Client Peer", packetSize), false, true, ConsoleColor.Red);
                     Close(arg);
                     return false;
                 }
@@ -278,8 +257,6 @@ namespace NetPublic
                     //다음패킷 처리를 위해 위치 조정
                     currentPos += packetSize;
                     remainDataSize -= packetSize;
-
-                    m_LastReceivePacketType = context.m_RequestID;
                 }
                 else    //아직 데이터를 더 받아야 한다.
                 {
@@ -315,21 +292,6 @@ namespace NetPublic
                     buffer = temp;
                 }
 
-                if (m_bServerPeer == true && (buffer.Length - remainDataSize) <= 0)
-                {
-                    Console.WriteLine(string.Format("(buffer.Length - remainDataSize) -> buffer.Length : {0}, remainDataSize : {1} ", buffer.Length, remainDataSize), false, true, ConsoleColor.Red);
-
-                    byte[] temp = BufferManager.Instance.Pop(buffer.Length + DEFAULT_BUFFER_SIZE);
-                    if (temp == null)
-                    {
-                        Close(arg);
-                        return false;
-                    }
-                    Array.Copy(buffer, 0, temp, 0, buffer.Length);
-                    BufferManager.Instance.Push(buffer);
-                    buffer = temp;
-                }
-
                 arg.SetBuffer(buffer, remainDataSize, buffer.Length - remainDataSize);
             }
             else
@@ -348,14 +310,7 @@ namespace NetPublic
             SocketAsyncEventArgs arg = AllocEvent();
             try
             {
-                if (m_bServerPeer == true && context.m_Binary.Length <= 0)
-                    Console.WriteLine(string.Format("context.m_Binary Length : {0}, PacketType : {1} ", context.m_Binary.Length, context.m_RequestID), false, true, ConsoleColor.Red);
-
                 arg.SetBuffer(context.m_Binary, 0, context.m_Binary.Length);
-                //int size = BitConverter.ToInt32(context.m_Binary, 0);
-                //arg.SetBuffer(context.m_Binary, 0, size);
-
-                m_LastSendPacketType = context.m_RequestID;
 
                 if (m_Socket.SendAsync(arg) == false)
                 {
@@ -374,8 +329,6 @@ namespace NetPublic
         {
             if (arg.SocketError != SocketError.Success)
             {
-                if (m_bServerPeer == true)
-                    Console.WriteLine("SendCompleted: " + arg.SocketError.ToString());
                 Close(arg);
                 return;
             }
@@ -393,11 +346,6 @@ namespace NetPublic
 
         public void Close(SocketAsyncEventArgs arg)
         {
-            if (m_bServerPeer == true)
-            {
-                Console.WriteLine(string.Format("Server Peer Close!!! - S:{0}, R:{1}", m_LastSendPacketType, m_LastReceivePacketType), true, true, ConsoleColor.Red);
-            }
-
             ReleaseEvent(arg);
 
             try

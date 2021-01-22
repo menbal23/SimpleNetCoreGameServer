@@ -222,13 +222,6 @@ namespace NetPublic
             Interlocked.Exchange(ref m_ContextSendCount, 0);
         }
 
-        public void SetServerPeer(int peerID)
-        {
-            Peer peer = FindPeer(peerID);
-            if (peer != null)
-                peer.m_bServerPeer = true;
-        }
-
         public void ConnectPeer(Int64 accountID, string ip, int port)
         {
             if (accountID <= 0 || string.IsNullOrEmpty(ip) || port <= 0)
@@ -254,7 +247,7 @@ namespace NetPublic
             peer.Close(null);
         }
 
-        public void BindPeer(int peerID, Int64 accountID, Context prevBindedPeerCloseContext = null)
+        public void BindPeer(int peerID, Int64 accountID)
         {
             if (peerID <= 0 || accountID <= 0)
                 return;
@@ -262,18 +255,6 @@ namespace NetPublic
             Peer peer = FindPeer(peerID);
             if (peer == null)
                 return;
-
-            Peer temp = null;
-            if (m_PeerDicByAccountID.TryRemove(accountID, out temp) == true)
-            {
-                if (temp.m_PeerID != peer.m_PeerID)
-                {
-                    if (prevBindedPeerCloseContext != null)
-                        temp.Send(prevBindedPeerCloseContext);
-                    temp.m_AccountID = 0;
-                    temp.Close(null);
-                }
-            }
 
             peer.m_AccountID = accountID;
             m_PeerDicByAccountID.TryAdd(accountID, peer);

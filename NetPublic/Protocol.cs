@@ -14,6 +14,9 @@ namespace NetPublic
 
 		ALIVE_REQ,
 		ALIVE_ACK,
+
+		LOGIN_REQ,
+		LOGIN_ACK,
 	}
 
 	public class Packet
@@ -67,6 +70,22 @@ namespace NetPublic
 		public PacketAliveAck()
 		{
 			m_Type = (short)PROTOCOL.ALIVE_ACK;
+		}
+	}
+
+	public class PacketLoginReq : Packet
+    {
+		public PacketLoginReq()
+        {
+			m_Type = (short)PROTOCOL.LOGIN_REQ;
+        }
+	}
+
+	public class PacketLoginAck : Packet
+	{
+		public PacketLoginAck()
+		{
+			m_Type = (short)PROTOCOL.LOGIN_ACK;
 		}
 	}
 }

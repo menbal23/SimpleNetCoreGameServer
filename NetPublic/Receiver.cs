@@ -114,15 +114,15 @@ namespace NetPublic
 						Console.WriteLine("Not Exist Deserializer: " + json);
 					}
 				}
+
+				if (context.m_Packet == null)
+				{
+					context.Reset();
+				}
 			}
 			catch (Exception ex)
 			{
 				Console.WriteLine("ReceiveProcess: " + ex.ToString());
-			}
-
-			if (context.m_Packet == null)
-			{
-				context.Reset();
 			}
 
 			Interlocked.Increment(ref m_Count);

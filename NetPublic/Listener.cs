@@ -11,7 +11,7 @@ namespace NetPublic
         private Socket m_Socket = null;
 
         //Listen
-        public void Init(string host, int port)
+        public void Init(int port)
         {
             if (m_Socket != null)
             {

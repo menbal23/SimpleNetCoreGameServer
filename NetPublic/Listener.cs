@@ -4,7 +4,7 @@ using System.Net.Sockets;
 
 namespace NetPublic
 {
-    class Listener
+    public class Listener
     {
         public static Listener Instance { get; private set; } = new Listener();
 

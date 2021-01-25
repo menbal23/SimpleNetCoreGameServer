@@ -17,8 +17,7 @@ namespace Server
         // 패킷들을 등록해서 처리한다.
         public void Initialize()
         {
-            RegisterPacket(new PacketConnectAck(), 0, RecvConnectAck);
-            RegisterPacket(new PacketLoginAck(), 0, RecvLoginAck);
+            RegisterPacket(new PacketConnectReq(), 0, RecvConnectReq);
         }
 
         public override void Process()
@@ -31,14 +30,11 @@ namespace Server
             base.SendError(context, errorAck);
         }
 
-        private async Task<ERROR_TYPE> RecvConnectAck(Context context, PacketConnectAck req)
+        private async Task<ERROR_TYPE> RecvConnectReq(Context context, PacketConnectReq req)
         {
             return await Util.EmptyTaskFunction(ERROR_TYPE.None);
         }
 
-        private async Task<ERROR_TYPE> RecvLoginAck(Context context, PacketLoginAck req)
-        {
-            return await Util.EmptyTaskFunction(ERROR_TYPE.None);
-        }
+
     }
 }

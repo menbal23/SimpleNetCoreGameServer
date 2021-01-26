@@ -20,7 +20,6 @@ namespace NetPublic
         private int m_LastPeerID = 0;
 
         //Context
-        private bool m_UseContextDic = false;
         private class ContextQueue : Queue<Context> { public object m_Lock { get; private set; } = new object(); }
         private ConcurrentDictionary<Int64, ContextQueue> m_ContextDic = new ConcurrentDictionary<Int64, ContextQueue>();
         private ConcurrentQueue<Context> m_ContextQueue = new ConcurrentQueue<Context>();
@@ -102,7 +101,6 @@ namespace NetPublic
 
                 case SocketAsyncOperation.Receive:
                     peer.ReceiveProcess(arg, false);
-                    //peer.ReceiveCompleted(arg);
                     break;
 
                 default:
@@ -375,12 +373,6 @@ namespace NetPublic
             }
         }
 
-        //Context
-        public void UseContextDic()
-        {
-            m_UseContextDic = true;
-        }
-
         public void EnqueueContext(Context context)
         {
             if (context == null)
@@ -391,7 +383,7 @@ namespace NetPublic
                 Interlocked.Increment(ref m_ContextRecvCount);
             }
 
-            if (m_UseContextDic == true && context.m_AccountID > 0)
+            if (context.m_AccountID > 0)
             {
                 ContextQueue queue = null;
                 if (m_ContextDic.TryGetValue(context.m_AccountID, out queue) == false)
@@ -429,7 +421,7 @@ namespace NetPublic
 
             Context next = null;
 
-            if (m_UseContextDic == true && context.m_AccountID > 0)
+            if (context.m_AccountID > 0)
             {
                 ContextQueue queue = null;
                 if (m_ContextDic.TryGetValue(context.m_AccountID, out queue) == true)

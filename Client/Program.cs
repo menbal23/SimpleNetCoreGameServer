@@ -12,13 +12,14 @@ namespace Client
         static void Main(string[] args)
         {
             BufferManager.Instance.Initialize();
+            Receiver.Instance.DeserializerLogDisable();
 
             m_Config = new IniUtil(Environment.CurrentDirectory + @"\Client.ini");
             string ip = m_Config.GetIniValue("Server", "IP");
             int port = int.Parse(m_Config.GetIniValue("Server", "Port"));
 
             List<Client> listClient = new List<Client>();
-            for (int i = 0; i < 100; ++i)
+            for (int i = 0; i < 1000; ++i)
             {
                 Client client = new Client();
                 client.ConnectServer(ip, port);

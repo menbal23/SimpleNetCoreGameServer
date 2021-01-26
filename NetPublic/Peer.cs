@@ -164,16 +164,12 @@ namespace NetPublic
         {
             if (arg.SocketError != SocketError.Success)
             {
-                //Console.WriteLine("ConnectCompleted: " + arg.SocketError.ToString());
                 Close(arg);
                 return;
             }
 
             m_ReceiveTick = Util.GetTotalTick() + Define.SOCKET_RECV_TICK;
             m_SendTick = Util.GetTotalTick() + Define.SOCKET_SEND_TICK;
-
-            PacketConnectAck packet = new PacketConnectAck();
-            Receiver.Instance.Push(m_PeerID, m_AccountID, packet);
 
             //받기요청
             arg.RemoteEndPoint = null;
@@ -350,11 +346,15 @@ namespace NetPublic
 
             try
             {
-                m_Socket.Shutdown(SocketShutdown.Send);
-                m_Socket.Close();
+                if (m_Socket != null)
+                {
+                    m_Socket.Shutdown(SocketShutdown.Send);
+                    m_Socket.Close();
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine($"Peer Close : {ex.Message}");
             }
 
             m_Socket = null;

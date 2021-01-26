@@ -11,7 +11,7 @@ namespace Client
         public long m_AccountID { private set; get; }
         public long m_SendTick { private set; get; }
 
-        public void ConnectServer()
+        public void ConnectServer(string ip, int port)
         {
             Peer peer = NetworkService.Instance.AllocPeer();
             if (peer == null)
@@ -20,7 +20,13 @@ namespace Client
             m_PeerID = peer.m_PeerID;
             m_AccountID = m_PeerID;
             m_SendTick = Util.GetCurrentTick() + Util.GetTickByMilliSecond(300);
-            peer.Connect("127.0.0.1", 8080);
+            peer.Connect(ip, port);
+        }
+
+        public void ConnectSend()
+        {
+            m_SendTick = Util.GetCurrentTick() + Util.GetTickByMilliSecond(300);
+            NetworkService.Instance.SendPeer(m_PeerID, m_AccountID, new PacketConnectReq());
         }
 
         public void Send()
@@ -29,7 +35,11 @@ namespace Client
                 return;
 
             m_SendTick = Util.GetCurrentTick() + Util.GetTickByMilliSecond(300);
-            NetworkService.Instance.SendPeer(m_PeerID, m_AccountID, new PacketConnectReq());
+
+            var packet = new PacketTestReq();
+            packet.m_TestMsg = $"Client {m_PeerID}";
+
+            NetworkService.Instance.SendPeer(m_PeerID, m_AccountID, packet);
         }
     }
 }

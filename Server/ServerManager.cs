@@ -17,7 +17,8 @@ namespace Server
         // 패킷들을 등록해서 처리한다.
         public void Initialize()
         {
-            RegisterPacket(new PacketConnectReq(), 0, RecvConnectReq);
+            RegisterPacket(new PacketConnectReq(), (short)PROTOCOL.CONNECT_ACK, RecvConnectReq);
+            RegisterPacket(new PacketTestReq(), (short)PROTOCOL.TEST_ACK, RecvTestReq);
         }
 
         public override void Process()
@@ -32,9 +33,29 @@ namespace Server
 
         private async Task<ERROR_TYPE> RecvConnectReq(Context context, PacketConnectReq req)
         {
+            var player = PCManager.Instance.Alloc(context.m_AccountID);
+            if (player == null)
+                return ERROR_TYPE.Error;
+
+            NetworkService.Instance.BindPeer(context.m_PeerID, context.m_AccountID);
+
+            PacketConnectAck ack = new PacketConnectAck();
+            player.Send(ack);
+            
             return await Util.EmptyTaskFunction(ERROR_TYPE.None);
         }
 
+        private async Task<ERROR_TYPE> RecvTestReq(Context context, PacketTestReq req)
+        {
+            var player = PCManager.Instance.FindAccountID(context.m_AccountID);
+            if (player == null)
+                return ERROR_TYPE.Error;
 
+            PacketTestAck ack = new PacketTestAck();
+            ack.m_TestMsg = req.m_TestMsg;
+            player.Send(ack);
+
+            return await Util.EmptyTaskFunction(ERROR_TYPE.None);
+        }
     }
 }

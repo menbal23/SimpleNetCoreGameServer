@@ -15,8 +15,8 @@ namespace NetPublic
 		ALIVE_REQ,
 		ALIVE_ACK,
 
-		LOGIN_REQ,
-		LOGIN_ACK,
+		TEST_REQ,
+		TEST_ACK,
 	}
 
 	public class Packet
@@ -73,19 +73,23 @@ namespace NetPublic
 		}
 	}
 
-	public class PacketLoginReq : Packet
-    {
-		public PacketLoginReq()
-        {
-			m_Type = (short)PROTOCOL.LOGIN_REQ;
-        }
+	public class PacketTestReq : Packet
+	{
+		public string m_TestMsg = "";
+
+		public PacketTestReq()
+		{
+			m_Type = (short)PROTOCOL.TEST_REQ;
+		}
 	}
 
-	public class PacketLoginAck : Packet
+	public class PacketTestAck : Packet
 	{
-		public PacketLoginAck()
+		public string m_TestMsg = "";
+
+		public PacketTestAck()
 		{
-			m_Type = (short)PROTOCOL.LOGIN_ACK;
+			m_Type = (short)PROTOCOL.TEST_ACK;
 		}
 	}
 }

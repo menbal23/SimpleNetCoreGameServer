@@ -34,6 +34,34 @@ RegisterPacket(new PacketConnectReq(), (short)PROTOCOL.CONNECT_ACK, RecvConnectR
 ```
 ------------
 
+5. MS-SQL 사용 시 DB 정보를 세팅한다.
+```C#
+string DBName = m_Config.GetIniValue("DB", "NAME");
+string DBIP = m_Config.GetIniValue("DB", "IP");
+string DBID = m_Config.GetIniValue("DB", "ID");
+string DBPW = m_Config.GetIniValue("DB", "PW");
+
+m_DBInfo = string.Format("Data Source={0};Initial Catalog={1};User ID={2};Password={3};", DBIP, DBName, DBID, DBPW);
+```
+
+6. DB 사용은 아래와 같다
+```C#
+SQLDB sql = new SQLDB("DB 정보");
+
+sql.SetProcedure("프로시저 이름");
+sql.Add("파라메타 정보");
+
+switch (await sql.Execute())
+{
+	// 성공
+	case 0:
+		break;
+	// 실패
+	default:
+		break;
+}
+```
+
 ## 받은 패킷 순차 처리 과정
 
 1. 받기 완료 요청 오면 ReceiveCompleted에서 Context 생성

@@ -62,9 +62,11 @@ switch (await sql.Execute())
 ```
 
 7. 빌드시 Config 폴더에 있는 ini 파일을 debug 폴더에 넣어야 한다.
+```
 Server.ini => Server\bin\Debug\netcoreapp3.1
 Client.ini => Client\bin\Debug\netcoreapp3.1
 Client.ini => Client\bin\Debug\netcoreapp3.1\win-x64
+```
 
 ------------
 

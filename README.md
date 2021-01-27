@@ -32,7 +32,6 @@ thread.Join();
 ```C#
 RegisterPacket(new PacketConnectReq(), (short)PROTOCOL.CONNECT_ACK, RecvConnectReq);
 ```
-------------
 
 5. MS-SQL 사용 시 DB 정보를 세팅한다.
 ```C#
@@ -62,6 +61,8 @@ switch (await sql.Execute())
 }
 ```
 
+------------
+
 ## 받은 패킷 순차 처리 과정
 
 1. 받기 완료 요청 오면 ReceiveCompleted에서 Context 생성
@@ -72,3 +73,9 @@ switch (await sql.Execute())
 6. Parser ProcessContext에서 패킷 처리를 하고 패킷 처리가 완료 되면 NetworkService ReleaseContext로 꺼내올 패킷이 있는지 체크 후 있으면 꺼내와서 다시 처리를 계속 한다.
 
 ------------
+
+## 추후 기능 추가 예정
++ 로그 기능
++ 덤프 기능
++ 데이터 파일 로드
++ 웹 인증(구글, 페이스북...)

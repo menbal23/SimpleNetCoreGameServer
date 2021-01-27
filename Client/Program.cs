@@ -12,6 +12,7 @@ namespace Client
         static void Main(string[] args)
         {
             BufferManager.Instance.Initialize();
+            // 클라에서는 받은 패킷을 따로 처리 하지 않아 에러가 나므로 콘솔에 에러 출력을 하지 않는다.
             Receiver.Instance.DeserializerLogDisable();
 
             m_Config = new IniUtil(Environment.CurrentDirectory + @"\Client.ini");

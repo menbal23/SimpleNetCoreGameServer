@@ -33,7 +33,7 @@ namespace Server
 
         private async Task<ERROR_TYPE> RecvConnectReq(Context context, PacketConnectReq req)
         {
-            var player = PCManager.Instance.Alloc(context.m_AccountID);
+            var player = PlayerManager.Instance.Alloc(context.m_AccountID);
             if (player == null)
                 return ERROR_TYPE.Error;
 
@@ -47,7 +47,7 @@ namespace Server
 
         private async Task<ERROR_TYPE> RecvTestReq(Context context, PacketTestReq req)
         {
-            var player = PCManager.Instance.FindAccountID(context.m_AccountID);
+            var player = PlayerManager.Instance.FindAccountID(context.m_AccountID);
             if (player == null)
                 return ERROR_TYPE.Error;
 

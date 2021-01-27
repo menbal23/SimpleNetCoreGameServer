@@ -4,9 +4,9 @@ using NetPublic;
 
 namespace Server
 {
-    class PCManager
+    class PlayerManager
     {
-        public static PCManager Instance { get; private set; } = new PCManager();
+        public static PlayerManager Instance { get; private set; } = new PlayerManager();
 
         private Pool<Player> m_PlayerPool;
         private ConcurrentDictionary<long, Player> m_DicPlayer;

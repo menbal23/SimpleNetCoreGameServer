@@ -1,5 +1,7 @@
 # SimpleNetCoreGameServer
 
+[![HitCount](http://hits.dwyl.com/{menbal23}/{SimpleNetCoreGameServer}.svg)](http://hits.dwyl.com/{menbal23}/{SimpleNetCoreGameServer})
+
 > 쉽게 따라 할수 있는 게임 서버 입니다.
 > 모든 패킷은 순차 처리 됩니다.
 > async awit로 DB 처리를 싱글 스레드 처럼 코드 작성이 가능 합니다.

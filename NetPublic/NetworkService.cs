@@ -396,6 +396,7 @@ namespace NetPublic
                 lock (queue.m_Lock)
                 {
                     queue.Enqueue(context);
+                    // 맨 처음 패킷이 아니면 m_ContextQueue에 넣지 않고 리턴한다.(순차 처리를 위해)
                     if (queue.Count != 1)
                         return;
                 }
